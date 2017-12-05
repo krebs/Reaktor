@@ -122,7 +122,7 @@ class asybot(asychat):
       # ERR_NICKNAMEINUSE, retry with another name
       self.on_nickinuse(prefix, command, params, rest)
 
-    elif command == '376':
+    elif command == '376' or '422':
       self.on_welcome(prefix, command, params, rest)
 
     self.reset_alarm()

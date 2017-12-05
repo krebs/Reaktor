@@ -6,6 +6,7 @@ stdenv.mkDerivation rec {
     buildInputs = with pkgs;[
       python34
       python34Packages.docopt
+      python34Packages.virtualenv
     ];
 
     shellHook =''

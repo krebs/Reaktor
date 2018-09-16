@@ -13,6 +13,7 @@
 import logging
 import logging.handlers
 import os
+import threading
 from asyncore import loop
 from os.path import dirname
 from re import match
@@ -61,14 +62,22 @@ class Reaktor(asybot):
 
     def on_join(self, prefix, command, params, rest):
         for command in self.getconf('on_join', []):
-            self.execute_command(command, None, prefix, params)
+            thread = threading.Thread(
+                target=self.execute_command,
+                args=(command, None, prefix, params),
+            )
+            thread.start()
 
     def on_ping(self, prefix, command, params, rest):
         for command in self.getconf('on_ping', []):
             prefix = '!'  # => env = { _prefix: '!', _from: '' }
             # TODO why don't we get a list here and use ','.join() ?
             params = command.get('targets')
-            self.execute_command(command, None, prefix, params)
+            thread = threading.Thread(
+                target=self.execute_command,
+                args=(command, None, prefix, params),
+            )
+            thread.start()
 
     def on_privmsg(self, prefix, command, params, rest):
         if not (self.nickname == self.getconf('name')):
@@ -88,12 +97,20 @@ class Reaktor(asybot):
                 if not self.is_admin(prefix):
                     self.PRIVMSG(params, 'unauthorized!')
                 else:
-                    return self.execute_command(command, y, prefix, params)
+                    thread = threading.Thread(
+                        target=self.execute_command,
+                        args=(command, y, prefix, params),
+                    )
+                    thread.start()
 
         for command in self.getconf('public_commands'):
             y = match(command['pattern'], rest)
             if y:
-                return self.execute_command(command, y, prefix, params)
+                thread = threading.Thread(
+                    target=self.execute_command,
+                    args=(command, y, prefix, params),
+                )
+                thread.start()
 
     def execute_command(self, command, match, prefix, target):
         from os.path import realpath, dirname, join

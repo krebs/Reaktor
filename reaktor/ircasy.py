@@ -20,7 +20,7 @@ class asybot(asychat):
     def __init__(
         self, server, port, nickname, channels, realname=False, username=False,
         hostname=False, hammer_interval=10, alarm_timeout=300,
-        kill_timeout=360, loglevel=logging.ERROR
+        kill_timeout=360, loglevel=logging.ERROR, nickserv_password=None
     ):
         asychat.__init__(self)
         # logger magic
@@ -52,6 +52,7 @@ class asybot(asychat):
         self.create_socket(AF_INET, SOCK_STREAM)
         self.connect((self.server, self.port))
         self.wrapper = TextWrapper(subsequent_indent=" ", width=400)
+        self.nickserv_password = nickserv_password
 
         self.log.info('=> irc://%s@%s:%s/%s' %
                       (self.nickname, self.server, self.port, self.channels))
@@ -132,6 +133,9 @@ class asybot(asychat):
         elif command == '376' or '422':
             self.on_welcome(prefix, command, params, rest)
 
+        elif command == 'NOTICE' and rest.startswith('You are now identified'):
+            self.push('JOIN %s' % ','.join(self.channels))
+
         self.reset_alarm()
 
     def push(self, message):
@@ -177,6 +181,8 @@ class asybot(asychat):
         self.PRIVMSG(target, ('ACTION ' + text + ''))
 
     def on_welcome(self, prefix, command, params, rest):
+        if self.nickserv_password:
+            self.push(f'PRIVMSG nickserv :IDENTIFY {self.nickserv_password}')
         self.push('JOIN %s' % ','.join(self.channels))
 
     def on_kick(self, prefix, command, params, rest):

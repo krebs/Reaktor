@@ -24,6 +24,12 @@ irc_port = int(env.get('REAKTOR_PORT', 6667))
 # TODO: do not implement functionality in the config :\
 workdir = env.get('REAKTOR_STATEDIR', expanduser('~') + '/state')
 irc_channels = env.get('REAKTOR_CHANNELS', '#krebs').split(',')
+try:
+    nickserv_password = open(
+        env.get('REAKTOR_NICKSERV_PASSWORD')
+    ).read().strip()
+except:  # noqa: E722
+    nickserv_password = None
 
 # static config
 # if you want to change this part you have to copy the config

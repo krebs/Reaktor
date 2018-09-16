@@ -37,14 +37,17 @@ class Reaktor(asybot):
             self.getconf = getconf
         log.info("using config file %s" % (config))
 
-        asybot.__init__(self,
-                        getconf('irc_server'),
-                        getconf('irc_port'),
-                        getconf('irc_nickname'),
-                        getconf('irc_channels'),
-                        hammer_interval=getconf('irc_hammer_interval'),
-                        alarm_timeout=getconf('irc_alarm_timeout'),
-                        kill_timeout=getconf('irc_kill_timeout'))
+        asybot.__init__(
+            self,
+            getconf('irc_server'),
+            getconf('irc_port'),
+            getconf('irc_nickname'),
+            getconf('irc_channels'),
+            hammer_interval=getconf('irc_hammer_interval'),
+            alarm_timeout=getconf('irc_alarm_timeout'),
+            kill_timeout=getconf('irc_kill_timeout'),
+            nickserv_password=getconf('nickserv_password'),
+        )
 
     def is_admin(self, prefix):
         try:

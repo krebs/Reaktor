@@ -1,3 +1,0 @@
-#!/bin/sh
-echo "system is going down"
-sudo /usr/bin/reboot

@@ -1,3 +1,0 @@
-#!/bin/sh
-
-sudo -u tor /krebs/bin/tor-get-hidden-service.sh || echo "no hidden service configured"

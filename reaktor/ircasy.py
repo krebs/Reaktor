@@ -133,9 +133,6 @@ class asybot(asychat):
         elif command == '376' or command == '422':
             self.on_welcome(prefix, command, params, rest)
 
-        elif command == 'NOTICE' and rest.startswith('You are now identified'):
-            self.push('JOIN %s' % ','.join(self.channels))
-
         self.reset_alarm()
 
     def push(self, message):
@@ -160,6 +157,8 @@ class asybot(asychat):
         self.connect((self.server, self.port))
 
     def handle_connect(self):
+        if self.nickserv_password:
+            self.push(f'PASS {self.nickserv_password}')
         self.push('NICK %s' % self.nickname)
         self.push('USER %s %s %s :%s' %
                   (self.username, self.hostname, self.server, self.realname))
@@ -181,8 +180,6 @@ class asybot(asychat):
         self.PRIVMSG(target, ('ACTION ' + text + ''))
 
     def on_welcome(self, prefix, command, params, rest):
-        if self.nickserv_password:
-            self.push(f'PRIVMSG nickserv :IDENTIFY {self.nickserv_password}')
         self.push('JOIN %s' % ','.join(self.channels))
 
     def on_kick(self, prefix, command, params, rest):

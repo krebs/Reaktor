@@ -135,7 +135,7 @@ public_commands = [
     # { 'pattern': '^' + me_or_us + ':.*',
     #  'argv': [ distc('respond'),'You are made of stupid!'] },
     # "highlight"
-    {'pattern': '.*' + me + '.*',
+    {'pattern': '.*' + me + '[^:].*',
         'argv': [distc('say'), 'I\'m famous']},
     # identify via direct connect
 ]

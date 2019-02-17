@@ -10,7 +10,7 @@ fi
 jq -cn \
     --arg from "$_from" \
     --arg to "${1%% *}" \
-    --arg text "${1##* }" \
+    --arg text "${1#* }" \
     --arg msgtarget "$_msgtarget" \
     '{ $from, $to, $text, $msgtarget, date: (now | todate) }' \
   >> "$state_file"
